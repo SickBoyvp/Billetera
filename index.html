@@ -24,6 +24,22 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            margin-top: 20px; /* Añade margen superior */
+            margin-bottom: 20px; /* Añade margen inferior */
+            position: relative; /* Para posicionar el mes/año */
+        }
+
+        /* NUEVO: Estilo para la visualización del mes y año */
+        #current-month-year {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #555;
+            background-color: #e2e6ea;
+            padding: 5px 10px;
+            border-radius: 5px;
         }
 
         #container-saldos-principales {
@@ -34,658 +50,899 @@
             flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas más pequeñas */
         }
 
-        #resumen-saldos, #saldos-actuales-container {
-            background-color: #fff;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            width: 45%; /* Ajusta el ancho para que quepan dos por línea */
-            box-sizing: border-box;
-            margin: 10px; /* Añade margen para separación */
+        #resumen-saldos {
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            width: 100%;
+            margin-bottom: 20px;
+            gap: 10px; /* Espacio entre los bloques de saldo */
         }
 
-         @media (max-width: 768px) { /* Media query para pantallas más pequeñas */
-            #resumen-saldos, #saldos-actuales-container {
-                width: 90%; /* Ocupa casi todo el ancho en pantallas pequeñas */
-                margin: 10px 0; /* Ajusta el margen */
-            }
-        }
-
-
-        /* Estilos específicos para centrar el total inicial */
-        #resumen-saldos .total,
-        #saldos-actuales-container .total {
+        .saldo-block {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
             text-align: center;
-            margin-top: 15px;
-            width: 100%;
-            border-top: 1px dotted #eee; /* Separador visual para el total */
-            padding-top: 10px;
+            flex: 1; /* Permite que los bloques crezcan y se encojan */
+            min-width: 120px; /* Ancho mínimo para cada bloque */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
-
-        #ingreso-gasto-container {
-            display: flex;
-            width: 80%;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            flex-wrap: wrap; /* Permite que se envuelvan */
-        }
-
-        #ingreso-gastos, #ingreso-ingresos {
-            background-color: #fff;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            width: 48%; /* Ajusta el ancho */
-            box-sizing: border-box;
-            margin: 10px 0; /* Añade margen para separación */
-        }
-
-         @media (max-width: 768px) { /* Media query para pantallas más pequeñas */
-            #ingreso-gastos, #ingreso-ingresos {
-                width: 100%; /* Ocupa todo el ancho */
-                margin: 10px 0;
-            }
-        }
-
-        #historial-gastos {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            width: 80%;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        #historial-gastos h2 {
-            margin-bottom: 10px;
-            align-self: flex-start;
-            width: 100%;
-        }
-
-        #historial-gastos > div { /* Contenedor flex para las listas de gastos e ingresos */
-            display: flex;
-            width: 100%;
-            justify-content: space-between;
-            flex-wrap: wrap; /* Permite que las listas se envuelvan */
-        }
-
-         #historial-gastos > div > div { /* Los contenedores de las listas individuales */
-             width: 48%; /* Ajusta el ancho */
-         }
-
-         @media (max-width: 768px) { /* Media query para pantallas más pequeñas */
-             #historial-gastos > div > div {
-                 width: 100%; /* Ocupa todo el ancho */
-                 margin-bottom: 20px; /* Espacio entre las listas en móvil */
-             }
-             #historial-gastos > div > div:last-child {
-                 margin-bottom: 0;
-             }
-         }
-
-        #historial-gastos ul {
-            list-style-type: none;
-            padding: 0;
-            width: 100%;
-        }
-
-        #historial-gastos li {
-            padding: 8px 0;
-            border-bottom: 1px dotted #eee;
-            word-wrap: break-word; /* Evita desbordamiento de texto largo */
-        }
-
-        #historial-gastos li:last-child {
-            border-bottom: none;
-        }
-
-        #reiniciar-historial {
-            background-color: #d9534f;
-            color: white;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+        .saldo-block p {
+            margin: 0;
             font-size: 0.9em;
-            margin-top: 20px; /* Aumenta el espacio para que esté debajo de ambas listas */
-        }
-
-        #reiniciar-historial:hover {
-            background-color: #c9302c;
-        }
-
-        h1, h2 {
-            text-align: center;
-            color: #333;
-        }
-
-        h3 { /* Estilo para los títulos de las listas en historial */
-            text-align: center;
-            margin-bottom: 10px;
             color: #555;
         }
 
-
-        label {
-            display: inline-block;
-            width: 150px;
-            margin-bottom: 5px;
-            font-weight: bold; /* Añade negrita a las etiquetas */
+        .saldo-block span {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #007bff;
+            display: block; /* Asegura que el monto esté en su propia línea */
+            margin-top: 5px;
         }
 
-        input[type="number"], input[type="text"], select {
-            width: calc(100% - 160px); /* Ajusta el ancho */
-            padding: 8px;
+        #saldos-iniciales, #forms-container, #historial-container, #transfer-container {
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+        }
+
+        #saldos-iniciales h2, #forms-container h2, #historial-container h2, #transfer-container h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        #saldos-iniciales-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        .saldo-input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             margin-bottom: 10px;
+        }
+
+        .saldo-input-group label {
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .saldo-input-group input[type="number"] {
+            width: 100px;
+            padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            box-sizing: border-box;
+            text-align: center;
         }
 
-        button {
-            background-color: #5cb85c;
+        #forms-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 20px;
+        }
+
+        .form-section {
+            flex: 1;
+            min-width: 300px; /* Ancho mínimo para cada formulario */
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-section h3 {
+            text-align: center;
+            color: #444;
+            margin-bottom: 15px;
+        }
+
+        .form-section label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-section input[type="text"],
+        .form-section input[type="number"],
+        /* ELIMINADO: input[type="date"] */
+        .form-section select {
+            width: calc(100% - 20px); /* Ajusta el ancho para el padding */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Incluye padding en el ancho */
+        }
+
+        .form-section .radio-group, .form-section .select-group {
+            margin-bottom: 15px;
+        }
+
+        .form-section .radio-group label, .form-section .select-group label {
+            display: inline-block;
+            margin-right: 15px;
+            font-weight: normal;
+        }
+
+        .form-section button {
+            background-color: #007bff;
             color: white;
             padding: 10px 15px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 1em;
-            margin-top: 10px; /* Añade margen superior a los botones de formulario */
+            width: 100%;
+            box-sizing: border-box;
         }
 
-        button:hover {
-            background-color: #4cae4c;
+        .form-section button:hover {
+            background-color: #0056b3;
         }
 
-        .total {
-            font-weight: bold;
-            margin-top: 10px;
-            /* text-align: right; /* Comentado para centrar */
-            text-align: center;
+        #historial-container {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
         }
 
-        /* Estilos específicos para "Fuente del Gasto" y "Fuente del Ingreso" */
-        #fuente-gasto-container,
-        #fuente-ingreso-container {
-            margin-bottom: 15px; /* Aumenta el espacio */
-            padding-top: 10px; /* Espacio arriba */
-            border-top: 1px dotted #eee; /* Separador visual */
+        #historial-list {
+            list-style: none;
+            padding: 0;
         }
 
-
-        #fuente-gasto-label,
-        #fuente-ingreso-label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 8px; /* Ajusta el espacio */
-             width: auto; /* Elimina el ancho fijo */
-        }
-
-        .fuente-opcion,
-        .fuente-ingreso-opcion {
+        #historial-list li {
+            background-color: #fff;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            margin-left: 20px;
-            margin-bottom: 5px; /* Aumenta el espacio */
+            flex-wrap: wrap; /* Permite que los elementos se envuelvan */
         }
 
-        .fuente-opcion input[type="radio"],
-        .fuente-ingreso-opcion input[type="radio"] {
-            margin-right: 8px; /* Ajusta el espacio */
-            width: auto; /* Elimina el ancho fijo */
-            margin-bottom: 0; /* Elimina margen inferior */
+        #historial-list li.ingreso {
+            border-left: 5px solid #28a745; /* Verde para ingresos */
         }
 
-         .fuente-opcion label,
-         .fuente-ingreso-opcion label {
-             font-weight: normal; /* Etiqueta normal para las opciones */
-             width: auto; /* Elimina el ancho fijo */
-             margin-bottom: 0; /* Elimina margen inferior */
-         }
+        #historial-list li.gasto {
+            border-left: 5px solid #dc3545; /* Rojo para gastos */
+        }
+        #historial-list li.transferencia {
+            border-left: 5px solid #ffc107; /* Amarillo/naranja para transferencias */
+        }
 
 
+        #historial-list .item-info {
+            flex-grow: 1;
+            padding-right: 10px; /* Espacio entre info y monto */
+        }
+
+        #historial-list .item-monto {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        #historial-list .item-monto.ingreso {
+            color: #28a745;
+        }
+
+        #historial-list .item-monto.gasto {
+            color: #dc3545;
+        }
+        #historial-list .item-monto.transferencia {
+            color: #007bff; /* Azul para transferencias */
+        }
+
+
+        #botones-historial {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #botones-historial button {
+            margin: 5px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        #reiniciar-historial-btn {
+            background-color: #ffc107;
+            color: #333;
+        }
+
+        #reiniciar-historial-btn:hover {
+            background-color: #e0a800;
+        }
+
+        #exportar-historial-btn {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        #exportar-historial-btn:hover {
+            background-color: #138496;
+        }
+
+        @media (max-width: 768px) {
+            #billetera-container {
+                width: 95%;
+                padding: 15px;
+            }
+
+            #resumen-saldos, #saldos-iniciales-inputs, #forms-container, #transfer-container .form-section {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .saldo-block, .form-section {
+                width: 100%;
+                min-width: unset;
+            }
+
+            .saldo-input-group input[type="number"] {
+                width: calc(100% - 20px);
+            }
+             #current-month-year { /* Ajuste para móviles */
+                position: static; /* No flotar en móviles */
+                margin-bottom: 10px; /* Añadir espacio abajo */
+                text-align: center;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
     <div id="billetera-container">
+        <h1>Mi Billetera Virtual</h1>
+
+        <div id="current-month-year"></div>
+
         <div id="container-saldos-principales">
-            <section id="resumen-saldos">
-                <h2>Mis Saldos Iniciales</h2>
-                <div>
-                    <label for="saldo-cuenta-inicial">Saldo en Cuenta:</label>
-                    <input type="number" id="saldo-cuenta-inicial" name="saldo-cuenta-inicial" placeholder="Ingrese su saldo" maxlength="10">
+            <div id="resumen-saldos">
+                <div class="saldo-block">
+                    <p>Total Disponible</p>
+                    <span id="saldo-total">$0.00</span>
                 </div>
-                <div>
-                    <label for="saldo-mano-inicial">Saldo en Efectivo:</label>
-                    <input type="number" id="saldo-mano-inicial" name="saldo-mano-inicial" placeholder="Ingrese su efectivo" maxlength="10">
+                <div class="saldo-block">
+                    <p>Saldo en Banco</p>
+                    <span id="saldo-cuenta">$0.00</span>
                 </div>
-                <div>
-                    <label for="saldo-billetera-inicial">Saldo en Billetera:</label>
-                    <input type="number" id="saldo-billetera-inicial" name="saldo-billetera-inicial" placeholder="Ingrese saldo en billetera" maxlength="10">
+                <div class="saldo-block">
+                    <p>Saldo en Casa</p>
+                    <span id="saldo-mano">$0.00</span>
                 </div>
-                <div class="total">
-                    <strong>Total Inicial:</strong> <span id="total-saldo-inicial">$0</span>
+                <div class="saldo-block">
+                    <p>Saldo Billetera</p>
+                    <span id="saldo-billetera">$0.00</span>
                 </div>
-                <button type="button" id="guardar-saldos">Guardar Saldos</button>
-            </section>
-
-            <section id="saldos-actuales-container">
-                <h2>Mis Saldos Actuales</h2>
-                <div>
-                    <label for="saldo-cuenta-actual">Saldo en Cuenta:</label>
-                    <span id="saldo-cuenta-actual">$0</span>
-                </div>
-                <div>
-                    <label for="saldo-mano-actual">Saldo en Efectivo:</label>
-                    <span id="saldo-mano-actual">$0</span>
-                </div>
-                 <div>
-                    <label for="saldo-billetera-actual">Saldo en Billetera:</label>
-                    <span id="saldo-billetera-actual">$0</span>
-                 </div>
-                <div class="total">
-                    <strong>Total Actual:</strong> <span id="total-saldo-actual">$0</span>
-                </div>
-            </section>
-        </div>
-
-        <div id="ingreso-gasto-container">
-            <section id="ingreso-gastos">
-                <h2>Nuevo Gasto</h2>
-                <form id="formulario-gasto">
-                    <div>
-                        <label for="descripcion">Descripción:</label>
-                        <input type="text" id="descripcion" name="descripcion">
-                    </div>
-                    <div>
-                        <label for="monto">Monto:</label>
-                        <input type="number" id="monto" name="monto">
-
-                    </div>
-                    <div>
-                        <label for="categoria">Categoría:</label>
-                        <select id="categoria" name="categoria">
-                            <option value="Comida">Comida</option>
-                            <option value="Nafta">Nafta</option>
-                            <option value="Joda">Joda</option>
-                            <option value="Otros">Otros</option>
-                        </select>
-                    </div>
-                    <div id="fuente-gasto-container">
-                        <label id="fuente-gasto-label">Fuente del Gasto:</label>
-                        <div class="fuente-opcion">
-                            <input type="radio" id="gasto-cuenta" name="fuente-gasto" value="cuenta" checked>
-                            <label for="gasto-cuenta">Cuenta</label>
-                        </div>
-                        <div class="fuente-opcion">
-                            <input type="radio" id="gasto-efectivo" name="fuente-gasto" value="efectivo">
-                            <label for="gasto-efectivo">Efectivo</label>
-                        </div>
-                         <div class="fuente-opcion">
-                            <input type="radio" id="gasto-billetera" name="fuente-gasto" value="billetera">
-                            <label for="gasto-billetera">Billetera</label>
-                        </div>
-                    </div>
-                    <button type="submit">Guardar Gasto</button>
-                </form>
-            </section>
-
-            <section id="ingreso-ingresos">
-                <h2>Nuevo Ingreso</h2>
-                <form id="formulario-ingreso">
-                    <div>
-                        <label for="descripcion-ingreso">Descripción:</label>
-                        <input type="text" id="descripcion-ingreso" name="descripcion-ingreso">
-                    </div>
-                    <div>
-                        <label for="monto-ingreso">Monto:</label>
-                        <input type="number" id="monto-ingreso" name="monto-ingreso">
-                    </div>
-                    <div>
-                        <label for="categoria-ingreso">Categoría:</label>
-                        <select id="categoria-ingreso" name="categoria-ingreso">
-                            <option value="Viajes">Viajes</option>
-                            <option value="Sistemas">Sistemas</option>
-                            <option value="Prestamo Tc">Prestamo Tc</option>
-                            <option value="Otros">Otros</option>
-                        </select>
-                    </div>
-                    <div id="fuente-ingreso-container">
-                        <label id="fuente-ingreso-label">Fuente del Ingreso:</label>
-                        <div class="fuente-ingreso-opcion">
-                            <input type="radio" id="ingreso-cuenta" name="fuente-ingreso" value="cuenta" checked>
-                            <label for="ingreso-cuenta">Cuenta</label>
-                        </div>
-                        <div class="fuente-ingreso-opcion">
-                            <input type="radio" id="ingreso-efectivo" name="fuente-ingreso" value="efectivo">
-                            <label for="ingreso-efectivo">Efectivo</label>
-                        </div>
-                         <div class="fuente-ingreso-opcion">
-                            <input type="radio" id="ingreso-billetera" name="fuente-ingreso" value="billetera">
-                            <label for="ingreso-billetera">Billetera</label>
-                        </div>
-                    </div>
-                    <button type="submit">Guardar Ingreso</button>
-                </form>
-            </section>
-        </div>
-
-        <section id="historial-gastos">
-            <h2>Historial de Movimientos</h2>
-            <div style="display: flex; width: 100%; justify-content: space-between; flex-wrap: wrap;">
-                <div style="width: 48%;"> <h3>Gastos</h3>
-                    <ul id="lista-gastos">
-                         </ul>
-                </div>
-                <div style="width: 48%;"> <h3>Ingresos</h3>
-                    <ul id="lista-ingresos">
-                        </ul>
+                 <div class="saldo-block">
+                    <p>Saldo Moto MP</p>
+                    <span id="saldo-moto-mp">$0.00</span>
                 </div>
             </div>
-            <button type="button" id="reiniciar-historial">Reiniciar Historial</button>
-        </section>
+        </div>
+
+        <div id="saldos-iniciales">
+            <h2>Saldos Iniciales</h2>
+            <div id="saldos-iniciales-inputs">
+                <div class="saldo-input-group">
+                    <label for="initial-cuenta">Banco:</label>
+                    <input type="number" id="initial-cuenta" value="0">
+                </div>
+                <div class="saldo-input-group">
+                    <label for="initial-mano">Casa:</label>
+                    <input type="number" id="initial-mano" value="0">
+                </div>
+                <div class="saldo-input-group">
+                    <label for="initial-billetera">Billetera:</label>
+                    <input type="number" id="initial-billetera" value="0">
+                </div>
+                <div class="saldo-input-group">
+                    <label for="initial-moto-mp">Moto MP:</label>
+                    <input type="number" id="initial-moto-mp" value="0">
+                </div>
+            </div>
+            <button id="set-initial-saldos">Establecer Saldos Iniciales</button>
+        </div>
+
+        <div id="forms-container">
+            <div class="form-section">
+                <h3>Nuevo Ingreso</h3>
+                <form id="form-ingreso">
+                    <label for="descripcion-ingreso">Descripción:</label>
+                    <input type="text" id="descripcion-ingreso" required>
+
+                    <label for="monto-ingreso">Monto:</label>
+                    <input type="number" id="monto-ingreso" min="0.01" step="0.01" required>
+
+                    <label for="categoria-ingreso">Categoría:</label>
+                    <select id="categoria-ingreso" required>
+                        <option value="">Seleccione una categoría</option>
+                        <option value="viajes">Viajes</option>
+                        <option value="sistemas">Sistemas</option>
+                        <option value="prestamo tc">Prestamo Tc</option>
+                        <option value="ahorro">Ahorro</option>
+                        <option value="otros">Otros</option>
+
+                    </select>
+
+                    <label>Fuente de Ingreso:</label>
+                    <div class="radio-group">
+                        <input type="radio" id="ingreso-banco" name="fuente-ingreso" value="banco" checked>
+                        <label for="ingreso-banco">Banco</label>
+                        <input type="radio" id="ingreso-casa" name="fuente-ingreso" value="casa">
+                        <label for="ingreso-casa">Casa</label>
+                        <input type="radio" id="ingreso-billetera" name="fuente-ingreso" value="billetera">
+                        <label for="ingreso-billetera">Billetera</label>
+                        <input type="radio" id="ingreso-mp" name="fuente-ingreso" value="motoMP">
+                        <label for="ingreso-mp">MP</label>
+                    </div>
+
+                    <button type="submit">Agregar Ingreso</button>
+                </form>
+            </div>
+
+            <div class="form-section">
+                <h3>Nuevo Gasto</h3>
+                <form id="form-gasto">
+                    <label for="descripcion-gasto">Descripción:</label>
+                    <input type="text" id="descripcion-gasto" required>
+
+                    <label for="monto-gasto">Monto:</label>
+                    <input type="number" id="monto-gasto" min="0.01" step="0.01" required>
+
+                    <label for="categoria-gasto">Categoría:</label>
+                    <select id="categoria-gasto" required>
+                        <option value="">Seleccione una categoría</option>
+                        <option value="comida">Comida</option>
+                        <option value="nafta">Nafta</option>
+                        <option value="Joda">Joda</option>
+                        <option value="expensas">Expensas</option>
+                        <option value="ropa">Ropa</option>
+                        <option value="adelanto">Adelanto</option>
+                        <option value="pago tc">Pago tc</option>
+                        <option value="otros">Otros</option>
+                    </select>
+
+                    <label>Fuente de Gasto:</label>
+                    <div class="radio-group">
+                        <input type="radio" id="gasto-banco" name="fuente-gasto" value="banco" checked>
+                        <label for="gasto-banco">Banco</label>
+                        <input type="radio" id="gasto-casa" name="fuente-gasto" value="casa">
+                        <label for="gasto-casa">Casa</label>
+                        <input type="radio" id="gasto-billetera" name="fuente-gasto" value="billetera">
+                        <label for="gasto-billetera">Billetera</label>
+                        <input type="radio" id="gasto-mp" name="fuente-gasto" value="motoMP">
+                        <label for="gasto-mp">MP</label>
+                    </div>
+
+                    <button type="submit">Agregar Gasto</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="transfer-container" class="form-section">
+            <h2>Mover Plata entre Cuentas</h2>
+            <form id="form-transferencia">
+                <label for="monto-transferencia">Monto:</label>
+                <input type="number" id="monto-transferencia" min="0.01" step="0.01" required>
+
+                <label for="origen-transferencia">De:</label>
+                <select id="origen-transferencia" required>
+                    <option value="">Seleccione origen</option>
+                    <option value="banco">Banco</option>
+                    <option value="casa">Casa</option>
+                    <option value="billetera">Billetera</option>
+                </select>
+
+                <label for="destino-transferencia">A:</label>
+                <select id="destino-transferencia" required>
+                    <option value="">Seleccione destino</option>
+                    <option value="banco">Banco</option>
+                    <option value="casa">Casa</option>
+                    <option value="billetera">Billetera</option>
+                    <option value="motoMP">Moto MP</option>
+                </select>
+
+                <button type="submit">Realizar Transferencia</button>
+            </form>
+        </div>
+
+
+        <div id="historial-container">
+            <h2>Historial de Movimientos</h2>
+            <ul id="historial-list">
+                </ul>
+            <div id="botones-historial">
+                <button id="reiniciar-historial-btn">Reiniciar Historial y Saldos Mensuales</button>
+                <button id="exportar-historial-btn">Exportar Historial a CSV</button>
+            </div>
+        </div>
     </div>
+
     <script>
-        // Elementos HTML
-        const billeteraContainer = document.getElementById('billetera-container');
-        const saldoCuentaInicialInput = document.getElementById('saldo-cuenta-inicial');
-        const saldoManoInicialInput = document.getElementById('saldo-mano-inicial');
-        // Nuevo elemento para Saldo Billetera Inicial Input
-        const saldoBilleteraInicialInput = document.getElementById('saldo-billetera-inicial');
+        // Variables para los saldos actuales
+        let saldoCuentaActual = 0; // Se refiere a "Banco"
+        let saldoManoActual = 0;   // Se refiere a "Casa"
+        let saldoBilleteraActual = 0;
+        let saldoMotoMPActual = 0;
 
-        const saldoCuentaActualSpan = document.getElementById('saldo-cuenta-actual');
-        const saldoManoActualSpan = document.getElementById('saldo-mano-actual');
-        // Nuevo elemento para Saldo Billetera Actual Span
-        const saldoBilleteraActualSpan = document.getElementById('saldo-billetera-actual');
-
-        const guardarSaldosButton = document.getElementById('guardar-saldos');
-        const totalSaldoInicialSpan = document.getElementById('total-saldo-inicial');
-        const totalSaldoActualSpan = document.getElementById('total-saldo-actual');
-
-        const formularioGasto = document.getElementById('formulario-gasto');
-        const descripcionInput = document.getElementById('descripcion');
-        const montoInput = document.getElementById('monto');
-        const categoriaSelect = document.getElementById('categoria');
-        // Referencia a los radio buttons de fuente de gasto (se accede por name)
-
-        const reiniciarHistorialButton = document.getElementById('reiniciar-historial');
-
-        const formularioIngreso = document.getElementById('formulario-ingreso');
-        const descripcionIngresoInput = document.getElementById('descripcion-ingreso');
-        const montoIngresoInput = document.getElementById('monto-ingreso');
-        const categoriaIngresoSelect = document.getElementById('categoria-ingreso');
-        // Referencia a los radio buttons de fuente de ingreso (se accede por name)
-
-        // Elementos para las listas de historial
-        const listaGastosElement = document.getElementById('lista-gastos');
-        const listaIngresosElement = document.getElementById('lista-ingresos');
+        // Variables para los saldos iniciales (se usan para establecer los saldos de Banco y Casa al inicio y reiniciar)
+        let saldoCuentaInicialInput = 0; // Valor del input de Banco al inicio
+        let saldoManoInicialInput = 0;   // Valor del input de Casa al inicio
+        let saldoBilleteraInicialInput = 0; // Valor del input de Billetera al inicio
+        let saldoMotoMPInicialInput = 0; // Valor del input de Moto MP al inicio
 
 
-        // Claves para localStorage
-        const SALDO_CUENTA_KEY = 'saldoCuenta';
-        const SALDO_MANO_KEY = 'saldoMano';
-        const SALDO_BILLETERA_KEY = 'saldoBilletera'; // Nueva clave para saldo en billetera
+        // Obtener elementos del DOM
+        const saldoTotalSpan = document.getElementById('saldo-total');
+        const saldoCuentaSpan = document.getElementById('saldo-cuenta');
+        const saldoManoSpan = document.getElementById('saldo-mano');
+        const saldoBilleteraSpan = document.getElementById('saldo-billetera');
+        const saldoMotoMPSpan = document.getElementById('saldo-moto-mp');
 
-        const GASTOS_KEY = 'historialGastos';
-        const INGRESOS_KEY = 'historialIngresos';
+        const initialCuentaInput = document.getElementById('initial-cuenta');
+        const initialManoInput = document.getElementById('initial-mano');
+        const initialBilleteraInput = document.getElementById('initial-billetera');
+        const initialMotoMPInput = document.getElementById('initial-moto-mp');
 
-        const SALDO_CUENTA_INICIAL_KEY = 'saldoCuentaInicial';
-        const SALDO_MANO_INICIAL_KEY = 'saldoManoInicial';
-        const SALDO_BILLETERA_INICIAL_KEY = 'saldoBilleteraInicial'; // Nueva clave para saldo inicial en billetera
+        const setInitialSaldosBtn = document.getElementById('set-initial-saldos');
 
+        const formularioIngreso = document.getElementById('form-ingreso');
+        const formularioGasto = document.getElementById('form-gasto');
+        const formularioTransferencia = document.getElementById('form-transferencia');
 
-        // Variables de estado
-        // Cargar desde localStorage o inicializar en 0
-        let saldoCuentaActual = parseInt(localStorage.getItem(SALDO_CUENTA_KEY)) || 0;
-        let saldoManoActual = parseInt(localStorage.getItem(SALDO_MANO_KEY)) || 0;
-        let saldoBilleteraActual = parseInt(localStorage.getItem(SALDO_BILLETERA_KEY)) || 0; // Nueva variable de estado
+        const historialList = document.getElementById('historial-list');
+        const reiniciarHistorialButton = document.getElementById('reiniciar-historial-btn');
+        const exportarHistorialButton = document.getElementById('exportar-historial-btn');
 
-        let saldoCuentaInicialGuardado = parseInt(localStorage.getItem(SALDO_CUENTA_INICIAL_KEY)) || 0;
-        let saldoManoInicialGuardado = parseInt(localStorage.getItem(SALDO_MANO_INICIAL_KEY)) || 0;
-        let saldoBilleteraInicialGuardado = parseInt(localStorage.getItem(SALDO_BILLETERA_INICIAL_KEY)) || 0; // Nueva variable de estado inicial
+        // NUEVO: Elemento para mostrar Mes y Año
+        const currentMonthYearDiv = document.getElementById('current-month-year');
 
-        let historialGastos = JSON.parse(localStorage.getItem(GASTOS_KEY)) || [];
-        let historialIngresos = JSON.parse(localStorage.getItem(INGRESOS_KEY)) || [];
+        // Historial de movimientos (ingresos y gastos)
+        let historialIngresos = [];
+        let historialGastos = [];
+        let historialTransferencias = [];
 
-        // Funciones de actualización de la interfaz y almacenamiento
+        // --- Funciones de Carga y Guardado ---
 
-        // Actualiza los saldos mostrados en la interfaz
-        function actualizarSaldosVisual() {
-            saldoCuentaActualSpan.textContent = '$' + parseInt(saldoCuentaActual);
-            saldoManoActualSpan.textContent = '$' + parseInt(saldoManoActual);
-            saldoBilleteraActualSpan.textContent = '$' + parseInt(saldoBilleteraActual); // Actualiza saldo billetera visual
-            totalSaldoActualSpan.textContent = '$' + parseInt(saldoCuentaActual + saldoManoActual + saldoBilleteraActual); // Suma los tres saldos para el total actual
+        function cargarSaldosLocalStorage() {
+            // Cargar saldos actuales
+            const savedCuentaActual = localStorage.getItem('saldoCuentaActual');
+            const savedManoActual = localStorage.getItem('saldoManoActual');
+            const savedBilleteraActual = localStorage.getItem('saldoBilleteraActual');
+            const savedMotoMPActual = localStorage.getItem('saldoMotoMPActual');
+
+            if (savedCuentaActual !== null) saldoCuentaActual = parseFloat(savedCuentaActual);
+            if (savedManoActual !== null) saldoManoActual = parseFloat(savedManoActual);
+            if (savedBilleteraActual !== null) saldoBilleteraActual = parseFloat(savedBilleteraActual);
+            if (savedMotoMPActual !== null) saldoMotoMPActual = parseFloat(savedMotoMPActual);
+
+            // Cargar valores de los inputs iniciales (para mostrarlos en la UI)
+            const savedCuentaInicialInput = localStorage.getItem('saldoCuentaInicialInput');
+            const savedManoInicialInput = localStorage.getItem('saldoManoInicialInput');
+            const savedBilleteraInicialInput = localStorage.getItem('saldoBilleteraInicialInput');
+            const savedMotoMPInicialInput = localStorage.getItem('saldoMotoMPInicialInput');
+
+            if (savedCuentaInicialInput !== null) {
+                saldoCuentaInicialInput = parseFloat(savedCuentaInicialInput);
+                initialCuentaInput.value = saldoCuentaInicialInput;
+            } else {
+                 initialCuentaInput.value = saldoCuentaActual;
+                 saldoCuentaInicialInput = saldoCuentaActual;
+            }
+            if (savedManoInicialInput !== null) {
+                saldoManoInicialInput = parseFloat(savedManoInicialInput);
+                initialManoInput.value = saldoManoInicialInput;
+            } else {
+                initialManoInput.value = saldoManoActual;
+                saldoManoInicialInput = saldoManoActual;
+            }
+            if (savedBilleteraInicialInput !== null) {
+                saldoBilleteraInicialInput = parseFloat(savedBilleteraInicialInput);
+                initialBilleteraInput.value = saldoBilleteraInicialInput;
+            } else {
+                initialBilleteraInput.value = saldoBilleteraActual;
+                saldoBilleteraInicialInput = saldoBilleteraActual;
+            }
+            if (savedMotoMPInicialInput !== null) {
+                saldoMotoMPInicialInput = parseFloat(savedMotoMPInicialInput);
+                initialMotoMPInput.value = saldoMotoMPInicialInput;
+            } else {
+                initialMotoMPInput.value = saldoMotoMPActual;
+                saldoMotoMPInicialInput = saldoMotoMPActual;
+            }
         }
 
-        // Guarda los saldos actuales e iniciales en localStorage
         function guardarSaldosLocalStorage() {
-            localStorage.setItem(SALDO_CUENTA_KEY, parseInt(saldoCuentaActual));
-            localStorage.setItem(SALDO_MANO_KEY, parseInt(saldoManoActual));
-            localStorage.setItem(SALDO_BILLETERA_KEY, parseInt(saldoBilleteraActual)); // Guarda saldo billetera actual
+            localStorage.setItem('saldoCuentaActual', saldoCuentaActual.toFixed(2));
+            localStorage.setItem('saldoManoActual', saldoManoActual.toFixed(2));
+            localStorage.setItem('saldoBilleteraActual', saldoBilleteraActual.toFixed(2));
+            localStorage.setItem('saldoMotoMPActual', saldoMotoMPActual.toFixed(2));
 
-            localStorage.setItem(SALDO_CUENTA_INICIAL_KEY, parseInt(saldoCuentaInicialGuardado));
-            localStorage.setItem(SALDO_MANO_INICIAL_KEY, parseInt(saldoManoInicialGuardado));
-            localStorage.setItem(SALDO_BILLETERA_INICIAL_KEY, parseInt(saldoBilleteraInicialGuardado)); // Guarda saldo billetera inicial
+            // Guardar los valores de los inputs iniciales para que se recuerden en la UI
+            localStorage.setItem('saldoCuentaInicialInput', saldoCuentaInicialInput.toFixed(2));
+            localStorage.setItem('saldoManoInicialInput', saldoManoInicialInput.toFixed(2));
+            localStorage.setItem('saldoBilleteraInicialInput', saldoBilleteraInicialInput.toFixed(2));
+            localStorage.setItem('saldoMotoMPInicialInput', saldoMotoMPInicialInput.toFixed(2));
         }
 
-        // Guarda el historial de gastos e ingresos en localStorage
+        function cargarHistorialLocalStorage() {
+            const savedIngresos = localStorage.getItem('historialIngresos');
+            const savedGastos = localStorage.getItem('historialGastos');
+            const savedTransferencias = localStorage.getItem('historialTransferencias');
+
+            if (savedIngresos) historialIngresos = JSON.parse(savedIngresos);
+            if (savedGastos) historialGastos = JSON.parse(savedGastos);
+            if (savedTransferencias) historialTransferencias = JSON.parse(savedTransferencias);
+        }
+
         function guardarHistorialLocalStorage() {
-            localStorage.setItem(GASTOS_KEY, JSON.stringify(historialGastos));
-            localStorage.setItem(INGRESOS_KEY, JSON.stringify(historialIngresos));
+            localStorage.setItem('historialIngresos', JSON.stringify(historialIngresos));
+            localStorage.setItem('historialGastos', JSON.stringify(historialGastos));
+            localStorage.setItem('historialTransferencias', JSON.stringify(historialTransferencias));
         }
 
-        // Muestra el historial de gastos e ingresos en las listas correspondientes
-        function mostrarHistorialMovimientos() { // Renombrada para reflejar que muestra ambos
-            listaGastosElement.innerHTML = '';
-            listaIngresosElement.innerHTML = '';
+        // --- Funciones de Actualización de UI ---
 
-            // Mostrar gastos
-            historialGastos.forEach(gasto => {
-                const nuevoItemGasto = document.createElement('li');
-                const fechaGastoObj = new Date(gasto.fecha);
-                const diaGasto = fechaGastoObj.getDate().toString().padStart(2, '0');
-                const mesGasto = (fechaGastoObj.getMonth() + 1).toString().padStart(2, '0'); // Los meses son 0-indexados
-                const anioGasto = fechaGastoObj.getFullYear();
-                const fechaGastoFormateada = `${diaGasto}/${mesGasto}/${anioGasto}`;
-                // Muestra la fuente legible, incluyendo Billetera
-                const fuenteGastoLegible = gasto.fuente === 'cuenta' ? 'Cuenta' : (gasto.fuente === 'efectivo' ? 'Efectivo' : 'Billetera');
-                // Modificado para quitar el signo menos
-                nuevoItemGasto.textContent = `${gasto.descripcion} $${parseInt(gasto.monto)} (${gasto.categoria}, ${fuenteGastoLegible}, ${fechaGastoFormateada})`;
-                listaGastosElement.appendChild(nuevoItemGasto);
-            });
+        function actualizarSaldosVisual() {
+            // Total Disponible = Banco + Casa + Billetera (NO Moto MP)
+            const saldoTotal = saldoCuentaActual + saldoManoActual + saldoBilleteraActual;
+            saldoTotalSpan.textContent = `$${saldoTotal.toFixed(2)}`;
+            saldoCuentaSpan.textContent = `$${saldoCuentaActual.toFixed(2)}`;
+            saldoManoSpan.textContent = `$${saldoManoActual.toFixed(2)}`;
+            saldoBilleteraSpan.textContent = `$${saldoBilleteraActual.toFixed(2)}`;
+            saldoMotoMPSpan.textContent = `$${saldoMotoMPActual.toFixed(2)}`;
+        }
 
-            // Mostrar ingresos
-            historialIngresos.forEach(ingreso => {
-                const nuevoItemIngreso = document.createElement('li');
-                const fechaIngresoObj = new Date(ingreso.fecha);
-                const diaIngreso = fechaIngresoObj.getDate().toString().padStart(2, '0');
-                const mesIngreso = (fechaIngresoObj.getMonth() + 1).toString().padStart(2, '0'); // Los meses son 0-indexados
-                const anioIngreso = fechaIngresoObj.getFullYear();
-                const fechaIngresoFormateada = `${diaIngreso}/${mesIngreso}/${anioIngreso}`;
-                 // Muestra la fuente legible, incluyendo Billetera
-                 const fuenteIngresoLegible = ingreso.fuente === 'cuenta' ? 'Cuenta' : (ingreso.fuente === 'efectivo' ? 'Efectivo' : 'Billetera');
-                 // Modificado para quitar el signo mas
-                 nuevoItemIngreso.textContent = `${ingreso.descripcion} $${parseInt(ingreso.monto)} (${ingreso.categoria}, ${fuenteIngresoLegible}, ${fechaIngresoFormateada})`;
-                listaIngresosElement.appendChild(nuevoItemIngreso);
+        function mostrarHistorialMovimientos() {
+            historialList.innerHTML = ''; // Limpiar historial actual
+
+            // Combinar todos los movimientos (ingresos, gastos, transferencias)
+            const todosLosMovimientos = [
+                ...historialIngresos.map(m => ({ ...m, tipo: 'ingreso' })),
+                ...historialGastos.map(m => ({ ...m, tipo: 'gasto' })),
+                ...historialTransferencias.map(m => ({ ...m, tipo: 'transferencia' }))
+            ].sort((a, b) => new Date(b.fecha) - new Date(a.fecha)); // Ordenar por fecha (más reciente primero)
+
+            todosLosMovimientos.forEach(movimiento => {
+                const li = document.createElement('li');
+                li.classList.add(movimiento.tipo);
+
+                const fechaFormateada = new Date(movimiento.fecha).toLocaleDateString('es-ES', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+
+                // Helper para mostrar nombres correctos de las fuentes
+                const getFuenteDisplay = (fuente) => {
+                    if (fuente === 'banco') return 'Banco';
+                    if (fuente === 'casa') return 'Casa';
+                    if (fuente === 'billetera') return 'Billetera';
+                    if (fuente === 'motoMP') return 'Moto MP';
+                    return fuente; // En caso de un valor inesperado
+                };
+
+                let itemInfoHTML = '';
+                let itemMontoHTML = '';
+
+                if (movimiento.tipo === 'ingreso' || movimiento.tipo === 'gasto') {
+                    itemInfoHTML = `
+                        <strong>${movimiento.descripcion}</strong> (${movimiento.categoria}) <br>
+                        <small>Fuente: ${getFuenteDisplay(movimiento.fuente)} - Fecha: ${fechaFormateada}</small>
+                    `;
+                    itemMontoHTML = `
+                        ${movimiento.tipo === 'ingreso' ? '+' : '-'}$${movimiento.monto.toFixed(2)}
+                    `;
+                } else if (movimiento.tipo === 'transferencia') {
+                    itemInfoHTML = `
+                        <strong>Transferencia</strong> <br>
+                        <small>De: ${getFuenteDisplay(movimiento.origen)} a ${getFuenteDisplay(movimiento.destino)} - Fecha: ${fechaFormateada}</small>
+                    `;
+                    itemMontoHTML = `$${movimiento.monto.toFixed(2)}`; // Monto de la transferencia, sin signo +/-
+                }
+
+
+                li.innerHTML = `
+                    <div class="item-info">
+                        ${itemInfoHTML}
+                    </div>
+                    <span class="item-monto ${movimiento.tipo}">
+                        ${itemMontoHTML}
+                    </span>
+                `;
+                historialList.appendChild(li);
             });
         }
 
-        // Reinicia todo el historial y saldos
-        function reiniciarHistorialCompleto() { // Renombrada para mayor claridad
-            historialGastos = [];
-            historialIngresos = [];
-            saldoCuentaActual = 0;
-            saldoManoActual = 0;
-            saldoBilleteraActual = 0; // Reinicia saldo billetera actual
-            saldoCuentaInicialGuardado = 0;
-            saldoManoInicialGuardado = 0;
-            saldoBilleteraInicialGuardado = 0; // Reinicia saldo billetera inicial guardado
+        // NUEVO: Función para mostrar el mes y año actual
+        function displayCurrentMonthYear() {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long' };
+            const monthYearString = now.toLocaleDateString('es-ES', options);
+            currentMonthYearDiv.textContent = monthYearString.charAt(0).toUpperCase() + monthYearString.slice(1); // Capitalizar la primera letra
+        }
 
-            localStorage.removeItem(GASTOS_KEY);
-            localStorage.removeItem(INGRESOS_KEY);
-            localStorage.removeItem(SALDO_CUENTA_KEY);
-            localStorage.removeItem(SALDO_MANO_KEY);
-            localStorage.removeItem(SALDO_BILLETERA_KEY); // Elimina saldo billetera de localStorage
-            localStorage.removeItem(SALDO_CUENTA_INICIAL_KEY);
-            localStorage.removeItem(SALDO_MANO_INICIAL_KEY);
-            localStorage.removeItem(SALDO_BILLETERA_INICIAL_KEY); // Elimina saldo billetera inicial de localStorage
+        // --- Lógica de la Aplicación ---
 
+        function setInitialSaldos() {
+            // Actualizar los valores de los inputs iniciales
+            saldoCuentaInicialInput = parseFloat(initialCuentaInput.value) || 0;
+            saldoManoInicialInput = parseFloat(initialManoInput.value) || 0;
+            saldoBilleteraInicialInput = parseFloat(initialBilleteraInput.value) || 0;
+            saldoMotoMPInicialInput = parseFloat(initialMotoMPInput.value) || 0;
 
-            // Limpiar inputs de saldos iniciales
-            saldoCuentaInicialInput.value = 0;
-            saldoManoInicialInput.value = 0;
-            saldoBilleteraInicialInput.value = 0; // Limpia input de saldo billetera inicial
+            // Al establecer los saldos iniciales, los saldos actuales se sincronizan con ellos
+            saldoCuentaActual = saldoCuentaInicialInput;
+            saldoManoActual = saldoManoInicialInput;
+            saldoBilleteraActual = saldoBilleteraInicialInput;
+            saldoMotoMPActual = saldoMotoMPInicialInput;
 
-            // Actualizar visualización
-            totalSaldoInicialSpan.textContent = '$0';
             actualizarSaldosVisual();
-            mostrarHistorialMovimientos(); // Muestra las listas vacías
+            guardarSaldosLocalStorage();
+            alert('Saldos iniciales establecidos/actualizados.');
         }
 
-        // Carga inicial de datos al cargar la página
-        // Ya se cargaron las variables de estado al inicio del script
+        function reiniciarHistorialCompleto() {
+            if (confirm('¿Estás seguro de que quieres reiniciar el historial de movimientos y los saldos de Banco y Casa a CERO? (Billetera y Moto MP mantendrán su saldo actual.)')) {
+                historialIngresos = [];
+                historialGastos = [];
+                historialTransferencias = [];
+                guardarHistorialLocalStorage();
 
-        // Inicializar la interfaz con los datos cargados
-        saldoCuentaInicialInput.value = saldoCuentaInicialGuardado;
-        saldoManoInicialInput.value = saldoManoInicialGuardado;
-        saldoBilleteraInicialInput.value = saldoBilleteraInicialGuardado; // Inicializa input de saldo billetera inicial
+                // Reiniciar saldos de Banco y Casa a CERO
+                saldoCuentaActual = 0;
+                saldoManoActual = 0;
 
-        totalSaldoInicialSpan.textContent = '$' + parseInt(saldoCuentaInicialGuardado + saldoManoInicialGuardado + saldoBilleteraInicialGuardado); // Suma los tres saldos iniciales
-        actualizarSaldosVisual(); // Muestra los saldos actuales cargados
-        mostrarHistorialMovimientos(); // Muestra el historial cargado
+                // Restablecer los inputs iniciales de Banco y Casa a CERO para reflejar el reinicio
+                initialCuentaInput.value = 0;
+                initialManoInput.value = 0;
+                saldoCuentaInicialInput = 0;
+                saldoManoInicialInput = 0;
 
-        // Evento para guardar los saldos iniciales
-        guardarSaldosButton.addEventListener('click', function() {
-            const saldoCuentaInicial = parseInt(saldoCuentaInicialInput.value) || 0;
-            const saldoManoInicial = parseInt(saldoManoInicialInput.value) || 0;
-            const saldoBilleteraInicial = parseInt(saldoBilleteraInicialInput.value) || 0; // Lee el nuevo input
+                // Billetera y Moto MP NO se reinician
+                // Mantienen su valor actual en saldoBilleteraActual y saldoMotoMPActual
+                // Y sus inputs iniciales también mantienen el último valor establecido por el usuario
 
-            // Al guardar saldos INICIALES, los saldos ACTUALES también se establecen a esos valores.
-            saldoCuentaActual = saldoCuentaInicial;
-            saldoManoActual = saldoManoInicial;
-            saldoBilleteraActual = saldoBilleteraInicial; // Establece saldo billetera actual
 
-            // Guardar los valores iniciales para referencia futura
-            saldoCuentaInicialGuardado = saldoCuentaInicial;
-            saldoManoInicialGuardado = saldoManoInicial;
-            saldoBilleteraInicialGuardado = saldoBilleteraInicial; // Guarda el valor inicial
+                guardarSaldosLocalStorage();
+                actualizarSaldosVisual();
+                mostrarHistorialMovimientos();
+                alert('Historial reiniciado. Saldos de Banco y Casa puestos a cero. Billetera y Moto MP mantienen su saldo.');
+            }
+        }
 
-            actualizarSaldosVisual(); // Actualiza los saldos actuales en la interfaz
-            totalSaldoInicialSpan.textContent = '$' + parseInt(saldoCuentaInicialGuardado + saldoManoInicialGuardado + saldoBilleteraInicialGuardado); // Actualiza el total inicial visual
-            guardarSaldosLocalStorage(); // Guarda todos los saldos (iniciales y actuales) en localStorage
+        function exportarHistorialCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Tipo,Descripcion/Origen,Monto,Categoria/Destino,Fuente,Fecha\n"; // Encabezados CSV
+
+            const todosLosMovimientos = [
+                ...historialIngresos.map(m => ({ ...m, tipo: 'Ingreso', descripcion: m.descripcion, fuente_origen: m.fuente, destino_categoria: m.categoria })),
+                ...historialGastos.map(m => ({ ...m, tipo: 'Gasto', descripcion: m.descripcion, fuente_origen: m.fuente, destino_categoria: m.categoria })),
+                ...historialTransferencias.map(m => ({ ...m, tipo: 'Transferencia', descripcion: `Transferencia de ${getFuenteDisplay(m.origen)} a ${getFuenteDisplay(m.destino)}`, fuente_origen: m.origen, destino_categoria: m.destino }))
+            ].sort((a, b) => new Date(a.fecha) - new Date(b.fecha)); // Ordenar por fecha para el CSV
+
+            todosLosMovimientos.forEach(mov => {
+                const getFuenteOrDestinoCSV = (value) => {
+                    if (value === 'banco') return 'Banco';
+                    if (value === 'casa') return 'Casa';
+                    if (value === 'billetera') return 'Billetera';
+                    if (value === 'motoMP') return 'Moto MP';
+                    return value;
+                };
+
+                const fila = [
+                    mov.tipo,
+                    `"${mov.descripcion.replace(/"/g, '""')}"`, // Escapar comillas dobles
+                    mov.monto.toFixed(2),
+                    getFuenteOrDestinoCSV(mov.destino_categoria), // Categoría o Destino
+                    getFuenteOrDestinoCSV(mov.fuente_origen), // Fuente u Origen
+                    mov.fecha // La fecha que ya está en el objeto movimiento
+                ].join(",");
+                csvContent += fila + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "historial_billetera.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // --- Event Listeners ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarSaldosLocalStorage();
+            cargarHistorialLocalStorage();
+            actualizarSaldosVisual();
+            displayCurrentMonthYear(); // NUEVO: Mostrar el mes y año al cargar
         });
 
-        // Evento para el envío del formulario de gasto
-        formularioGasto.addEventListener('submit', function(event) {
-            event.preventDefault();
+        setInitialSaldosBtn.addEventListener('click', setInitialSaldos);
 
-            const descripcion = descripcionInput.value.trim(); // Usar trim para eliminar espacios
-            const montoGasto = parseFloat(montoInput.value); // Usar parseFloat para permitir decimales, aunque la visualización los trate como enteros
-            const categoria = categoriaSelect.value;
-            // Obtiene el valor del radio button seleccionado
-            const fuenteGasto = document.querySelector('input[name="fuente-gasto"]:checked').value;
-            const fechaGasto = new Date().toString(); // Almacenar como string (podría ser un timestamp o ISO string para mayor precisión)
+        formularioIngreso.addEventListener('submit', (e) => {
+            e.preventDefault();
 
-            // Validar monto
-            if (isNaN(montoGasto) || montoGasto <= 0) {
-                alert('Por favor, ingrese un monto válido para el gasto.');
-                return; // Detiene la ejecución si el monto es inválido
+            const descripcionIngreso = document.getElementById('descripcion-ingreso').value;
+            const montoIngreso = parseFloat(document.getElementById('monto-ingreso').value);
+            const categoriaIngreso = document.getElementById('categoria-ingreso').value;
+            const fuenteIngreso = document.querySelector('input[name="fuente-ingreso"]:checked').value;
+            const fechaIngreso = new Date().toISOString().split('T')[0]; // Obtener la fecha actual automáticamente
+
+            if (montoIngreso <= 0) {
+                alert('El monto del ingreso debe ser mayor a cero.');
+                return;
             }
-             // Validar descripción
-             if (descripcion === '') {
-                 alert('Por favor, ingrese una descripción para el gasto.');
-                 return; // Detiene la ejecución si la descripción está vacía
-             }
 
+            if (fuenteIngreso === 'banco') {
+                saldoCuentaActual += montoIngreso;
+            } else if (fuenteIngreso === 'casa') {
+                saldoManoActual += montoIngreso;
+            } else if (fuenteIngreso === 'billetera') {
+                saldoBilleteraActual += montoIngreso;
+            } else if (fuenteIngreso === 'motoMP') {
+                saldoMotoMPActual += montoIngreso;
+            }
 
-            // Descontar el monto del saldo correspondiente según la fuente
-            if (fuenteGasto === 'cuenta') {
+            actualizarSaldosVisual();
+            guardarSaldosLocalStorage();
+
+            const nuevoIngreso = { descripcion: descripcionIngreso, monto: montoIngreso, categoria: categoriaIngreso, fuente: fuenteIngreso, fecha: fechaIngreso };
+            historialIngresos.push(nuevoIngreso);
+            mostrarHistorialMovimientos();
+            guardarHistorialLocalStorage();
+
+            formularioIngreso.reset();
+            document.getElementById('ingreso-banco').checked = true;
+        });
+
+        formularioGasto.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const descripcionGasto = document.getElementById('descripcion-gasto').value;
+            const montoGasto = parseFloat(document.getElementById('monto-gasto').value);
+            const categoriaGasto = document.getElementById('categoria-gasto').value;
+            const fuenteGasto = document.querySelector('input[name="fuente-gasto"]:checked').value;
+            const fechaGasto = new Date().toISOString().split('T')[0]; // Obtener la fecha actual automáticamente
+
+            if (montoGasto <= 0) {
+                alert('El monto del gasto debe ser mayor a cero.');
+                return;
+            }
+
+            if (fuenteGasto === 'motoMP') {
+                alert('No se puede registrar un gasto desde Moto MP. Esta es una cuenta de ahorro.');
+                return;
+            }
+
+            let saldoSuficiente = true;
+            if (fuenteGasto === 'banco' && montoGasto > saldoCuentaActual) {
+                saldoSuficiente = false;
+            } else if (fuenteGasto === 'casa' && montoGasto > saldoManoActual) {
+                saldoSuficiente = false;
+            } else if (fuenteGasto === 'billetera' && montoGasto > saldoBilleteraActual) {
+                saldoSuficiente = false;
+            }
+
+            if (!saldoSuficiente) {
+                alert('Saldo insuficiente en la fuente seleccionada.');
+                return;
+            }
+
+            if (fuenteGasto === 'banco') {
                 saldoCuentaActual -= montoGasto;
-            } else if (fuenteGasto === 'efectivo') {
+            } else if (fuenteGasto === 'casa') {
                 saldoManoActual -= montoGasto;
-            } else if (fuenteGasto === 'billetera') { // Manejar la nueva fuente "billetera"
+            } else if (fuenteGasto === 'billetera') {
                 saldoBilleteraActual -= montoGasto;
             }
 
-            // Asegurarse de que los saldos no sean negativos (opcional, depende de la lógica deseada)
-            saldoCuentaActual = Math.max(0, saldoCuentaActual);
-            saldoManoActual = Math.max(0, saldoManoActual);
-            saldoBilleteraActual = Math.max(0, saldoBilleteraActual); // Asegurar que saldo billetera no sea negativo
+            actualizarSaldosVisual();
+            guardarSaldosLocalStorage();
 
-
-            actualizarSaldosVisual(); // Actualiza la visualización de saldos
-            guardarSaldosLocalStorage(); // Guarda los saldos actualizados
-
-            // Agregar el gasto al historial
-            const nuevoGasto = { descripcion, monto: montoGasto, categoria, fuente: fuenteGasto, fecha: fechaGasto };
+            const nuevoGasto = { descripcion: descripcionGasto, monto: montoGasto, categoria: categoriaGasto, fuente: fuenteGasto, fecha: fechaGasto };
             historialGastos.push(nuevoGasto);
-            mostrarHistorialMovimientos(); // Actualiza la lista de historial
-            guardarHistorialLocalStorage(); // Guarda el historial actualizado
+            mostrarHistorialMovimientos();
+            guardarHistorialLocalStorage();
 
-            // Limpiar el formulario de gasto
-            descripcionInput.value = '';
-            montoInput.value = '';
-            categoriaSelect.value = 'Comida'; // Restablecer a la opción por defecto
-            document.getElementById('gasto-cuenta').checked = true; // Restablecer el radio button por defecto
+            formularioGasto.reset();
+            document.getElementById('gasto-banco').checked = true;
         });
 
-        // Evento para el envío del formulario de ingreso
-        formularioIngreso.addEventListener('submit', function(event) {
-            event.preventDefault();
+        formularioTransferencia.addEventListener('submit', (e) => {
+            e.preventDefault();
 
-            const descripcionIngreso = descripcionIngresoInput.value.trim(); // Usar trim
-            const montoIngreso = parseFloat(montoIngresoInput.value); // Usar parseFloat
-            const categoriaIngreso = categoriaIngresoSelect.value;
-             // Obtiene el valor del radio button seleccionado
-            const fuenteIngreso = document.querySelector('input[name="fuente-ingreso"]:checked').value;
-            const fechaIngreso = new Date().toString(); // Almacenar como string
+            const montoTransferencia = parseFloat(document.getElementById('monto-transferencia').value);
+            const origenTransferencia = document.getElementById('origen-transferencia').value;
+            const destinoTransferencia = document.getElementById('destino-transferencia').value;
+            const fechaTransferencia = new Date().toISOString().split('T')[0]; // Obtener la fecha actual automáticamente
 
-             // Validar monto
-            if (isNaN(montoIngreso) || montoIngreso <= 0) {
-                alert('Por favor, ingrese un monto válido para el ingreso.');
-                return; // Detiene la ejecución si el monto es inválido
-            }
-             // Validar descripción
-             if (descripcionIngreso === '') {
-                 alert('Por favor, ingrese una descripción para el ingreso.');
-                 return; // Detiene la ejecución si la descripción está vacía
-             }
-
-
-            // Sumar el monto al saldo correspondiente según la fuente
-            if (fuenteIngreso === 'cuenta') {
-                saldoCuentaActual += montoIngreso;
-            } else if (fuenteIngreso === 'efectivo') {
-                saldoManoActual += montoIngreso;
-            } else if (fuenteIngreso === 'billetera') { // ¡Ahora también sumamos a la billetera si es la fuente!
-                saldoBilleteraActual += montoIngreso;
+            if (montoTransferencia <= 0) {
+                alert('El monto de la transferencia debe ser mayor a cero.');
+                return;
             }
 
-            actualizarSaldosVisual(); // Actualiza la visualización de saldos
-            guardarSaldosLocalStorage(); // Guarda los saldos actualizados
+            if (origenTransferencia === '' || destinoTransferencia === '') {
+                alert('Por favor, seleccione las cuentas de origen y destino.');
+                return;
+            }
+            if (origenTransferencia === destinoTransferencia) {
+                alert('La cuenta de origen y destino no pueden ser la misma.');
+                return;
+            }
 
-            // Agregar el ingreso al historial
-            const nuevoIngreso = { descripcion: descripcionIngreso, monto: montoIngreso, categoria: categoriaIngreso, fuente: fuenteIngreso, fecha: fechaIngreso };
-            historialIngresos.push(nuevoIngreso);
-            mostrarHistorialMovimientos(); // Actualiza la lista de historial
-            guardarHistorialLocalStorage(); // Guarda el historial actualizado
+            if (origenTransferencia === 'motoMP') {
+                alert('No se puede transferir dinero DESDE Moto MP. Esta es una cuenta de ahorro.');
+                return;
+            }
 
-            // Limpiar el formulario de ingreso
-            descripcionIngresoInput.value = '';
-            montoIngresoInput.value = '';
-            categoriaIngresoSelect.value = 'Viajes'; // Restablecer a la opción por defecto
-            document.getElementById('ingreso-cuenta').checked = true; // Restablecer el radio button por defecto
+            let saldoOrigenActual;
+            switch (origenTransferencia) {
+                case 'banco': saldoOrigenActual = saldoCuentaActual; break;
+                case 'casa': saldoOrigenActual = saldoManoActual; break;
+                case 'billetera': saldoOrigenActual = saldoBilleteraActual; break;
+            }
+
+            if (montoTransferencia > saldoOrigenActual) {
+                alert('Saldo insuficiente en la cuenta de origen para realizar la transferencia.');
+                return;
+            }
+
+            switch (origenTransferencia) {
+                case 'banco': saldoCuentaActual -= montoTransferencia; break;
+                case 'casa': saldoManoActual -= montoTransferencia; break;
+                case 'billetera': saldoBilleteraActual -= montoTransferencia; break;
+            }
+
+            switch (destinoTransferencia) {
+                case 'banco': saldoCuentaActual += montoTransferencia; break;
+                case 'casa': saldoManoActual += montoTransferencia; break;
+                case 'billetera': saldoBilleteraActual += montoTransferencia; break;
+                case 'motoMP': saldoMotoMPActual += montoTransferencia; break;
+            }
+
+            actualizarSaldosVisual();
+            guardarSaldosLocalStorage();
+
+            const nuevaTransferencia = {
+                monto: montoTransferencia,
+                origen: origenTransferencia,
+                destino: destinoTransferencia,
+                fecha: fechaTransferencia
+            };
+            historialTransferencias.push(nuevaTransferencia);
+            mostrarHistorialMovimientos();
+            guardarHistorialLocalStorage();
+
+            formularioTransferencia.reset();
         });
 
-        // Evento para reiniciar el historial completo
+
         reiniciarHistorialButton.addEventListener('click', reiniciarHistorialCompleto);
+        exportarHistorialButton.addEventListener('click', exportarHistorialCSV);
 
     </script>
 </body>
