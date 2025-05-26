@@ -59,14 +59,24 @@
             gap: 10px; /* Espacio entre los bloques de saldo */
         }
 
+        /* MODIFICADO PARA TAMAÑO Y CENTRADO UNIFORME */
         .saldo-block {
             background-color: #e9ecef;
             padding: 15px;
             border-radius: 5px;
-            text-align: center;
-            flex: 1; /* Permite que los bloques crezcan y se encojan */
-            min-width: 120px; /* Ancho mínimo para cada bloque */
+            text-align: center; /* Centra el texto horizontalmente */
+            flex-grow: 1;       /* Permite que el bloque crezca */
+            flex-shrink: 1;     /* Permite que el bloque se encoja */
+            flex-basis: 150px;  /* Tamaño base sugerido para cada bloque */
+            max-width: 180px;   /* Ancho máximo para evitar que se expandan demasiado */
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 10px; /* Asegura un espacio si envuelven a la siguiente línea */
+
+            /* Nuevas propiedades para centrar contenido interno verticalmente y asegurar altura uniforme */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Centra el contenido (p y span) verticalmente */
+            align-items: center; /* Centra el contenido (p y span) horizontalmente si tuvieran ancho propio menor al bloque */
         }
 
         .saldo-block p {
@@ -158,7 +168,6 @@
 
         .form-section input[type="text"],
         .form-section input[type="number"],
-        /* ELIMINADO: input[type="date"] */
         .form-section select {
             width: calc(100% - 20px); /* Ajusta el ancho para el padding */
             padding: 10px;
@@ -294,9 +303,12 @@
                 align-items: center;
             }
 
+            /* En móviles, los bloques ocuparán todo el ancho disponible */
             .saldo-block, .form-section {
                 width: 100%;
-                min-width: unset;
+                min-width: unset; /* Quitar el min-width para móviles */
+                max-width: 100%; /* Permitir que ocupen el ancho completo */
+                flex-basis: auto; /* Resetear flex-basis */
             }
 
             .saldo-input-group input[type="number"] {
@@ -339,6 +351,14 @@
                     <p>Saldo Moto MP</p>
                     <span id="saldo-moto-mp">$0.00</span>
                 </div>
+                <div class="saldo-block">
+                    <p>Total Ingresos</p>
+                    <span id="total-ingresos-mes">$0.00</span>
+                </div>
+                <div class="saldo-block">
+                    <p>Total Gastos</p>
+                    <span id="total-gastos-mes">$0.00</span>
+                </div>
             </div>
         </div>
 
@@ -347,19 +367,19 @@
             <div id="saldos-iniciales-inputs">
                 <div class="saldo-input-group">
                     <label for="initial-cuenta">Banco:</label>
-                    <input type="number" id="initial-cuenta" value="0">
+                    <input type="number" id="initial-cuenta" value="0" step="0.01">
                 </div>
                 <div class="saldo-input-group">
                     <label for="initial-mano">Casa:</label>
-                    <input type="number" id="initial-mano" value="0">
+                    <input type="number" id="initial-mano" value="0" step="0.01">
                 </div>
                 <div class="saldo-input-group">
                     <label for="initial-billetera">Billetera:</label>
-                    <input type="number" id="initial-billetera" value="0">
+                    <input type="number" id="initial-billetera" value="0" step="0.01">
                 </div>
                 <div class="saldo-input-group">
                     <label for="initial-moto-mp">Moto MP:</label>
-                    <input type="number" id="initial-moto-mp" value="0">
+                    <input type="number" id="initial-moto-mp" value="0" step="0.01">
                 </div>
             </div>
             <button id="set-initial-saldos">Establecer Saldos Iniciales</button>
@@ -483,16 +503,15 @@
 
     <script>
         // Variables para los saldos actuales
-        let saldoCuentaActual = 0; // Se refiere a "Banco"
-        let saldoManoActual = 0;   // Se refiere a "Casa"
+        let saldoCuentaActual = 0;
+        let saldoManoActual = 0;
         let saldoBilleteraActual = 0;
         let saldoMotoMPActual = 0;
 
-        // Variables para los saldos iniciales (se usan para establecer los saldos de Banco y Casa al inicio y reiniciar)
-        let saldoCuentaInicialInput = 0; // Valor del input de Banco al inicio
-        let saldoManoInicialInput = 0;   // Valor del input de Casa al inicio
-        let saldoBilleteraInicialInput = 0; // Valor del input de Billetera al inicio
-        let saldoMotoMPInicialInput = 0; // Valor del input de Moto MP al inicio
+        let saldoCuentaInicialInput = 0;
+        let saldoManoInicialInput = 0;
+        let saldoBilleteraInicialInput = 0;
+        let saldoMotoMPInicialInput = 0;
 
 
         // Obtener elementos del DOM
@@ -501,6 +520,10 @@
         const saldoManoSpan = document.getElementById('saldo-mano');
         const saldoBilleteraSpan = document.getElementById('saldo-billetera');
         const saldoMotoMPSpan = document.getElementById('saldo-moto-mp');
+        // NUEVO: Spans para totales de ingresos y gastos del mes
+        const totalIngresosMesSpan = document.getElementById('total-ingresos-mes');
+        const totalGastosMesSpan = document.getElementById('total-gastos-mes');
+
 
         const initialCuentaInput = document.getElementById('initial-cuenta');
         const initialManoInput = document.getElementById('initial-mano');
@@ -517,10 +540,8 @@
         const reiniciarHistorialButton = document.getElementById('reiniciar-historial-btn');
         const exportarHistorialButton = document.getElementById('exportar-historial-btn');
 
-        // NUEVO: Elemento para mostrar Mes y Año
         const currentMonthYearDiv = document.getElementById('current-month-year');
 
-        // Historial de movimientos (ingresos y gastos)
         let historialIngresos = [];
         let historialGastos = [];
         let historialTransferencias = [];
@@ -528,7 +549,6 @@
         // --- Funciones de Carga y Guardado ---
 
         function cargarSaldosLocalStorage() {
-            // Cargar saldos actuales
             const savedCuentaActual = localStorage.getItem('saldoCuentaActual');
             const savedManoActual = localStorage.getItem('saldoManoActual');
             const savedBilleteraActual = localStorage.getItem('saldoBilleteraActual');
@@ -539,7 +559,6 @@
             if (savedBilleteraActual !== null) saldoBilleteraActual = parseFloat(savedBilleteraActual);
             if (savedMotoMPActual !== null) saldoMotoMPActual = parseFloat(savedMotoMPActual);
 
-            // Cargar valores de los inputs iniciales (para mostrarlos en la UI)
             const savedCuentaInicialInput = localStorage.getItem('saldoCuentaInicialInput');
             const savedManoInicialInput = localStorage.getItem('saldoManoInicialInput');
             const savedBilleteraInicialInput = localStorage.getItem('saldoBilleteraInicialInput');
@@ -547,30 +566,30 @@
 
             if (savedCuentaInicialInput !== null) {
                 saldoCuentaInicialInput = parseFloat(savedCuentaInicialInput);
-                initialCuentaInput.value = saldoCuentaInicialInput;
+                initialCuentaInput.value = saldoCuentaInicialInput.toFixed(2);
             } else {
-                 initialCuentaInput.value = saldoCuentaActual;
+                 initialCuentaInput.value = saldoCuentaActual.toFixed(2);
                  saldoCuentaInicialInput = saldoCuentaActual;
             }
             if (savedManoInicialInput !== null) {
                 saldoManoInicialInput = parseFloat(savedManoInicialInput);
-                initialManoInput.value = saldoManoInicialInput;
+                initialManoInput.value = saldoManoInicialInput.toFixed(2);
             } else {
-                initialManoInput.value = saldoManoActual;
+                initialManoInput.value = saldoManoActual.toFixed(2);
                 saldoManoInicialInput = saldoManoActual;
             }
             if (savedBilleteraInicialInput !== null) {
                 saldoBilleteraInicialInput = parseFloat(savedBilleteraInicialInput);
-                initialBilleteraInput.value = saldoBilleteraInicialInput;
+                initialBilleteraInput.value = saldoBilleteraInicialInput.toFixed(2);
             } else {
-                initialBilleteraInput.value = saldoBilleteraActual;
+                initialBilleteraInput.value = saldoBilleteraActual.toFixed(2);
                 saldoBilleteraInicialInput = saldoBilleteraActual;
             }
             if (savedMotoMPInicialInput !== null) {
                 saldoMotoMPInicialInput = parseFloat(savedMotoMPInicialInput);
-                initialMotoMPInput.value = saldoMotoMPInicialInput;
+                initialMotoMPInput.value = saldoMotoMPInicialInput.toFixed(2);
             } else {
-                initialMotoMPInput.value = saldoMotoMPActual;
+                initialMotoMPInput.value = saldoMotoMPActual.toFixed(2);
                 saldoMotoMPInicialInput = saldoMotoMPActual;
             }
         }
@@ -581,7 +600,6 @@
             localStorage.setItem('saldoBilleteraActual', saldoBilleteraActual.toFixed(2));
             localStorage.setItem('saldoMotoMPActual', saldoMotoMPActual.toFixed(2));
 
-            // Guardar los valores de los inputs iniciales para que se recuerden en la UI
             localStorage.setItem('saldoCuentaInicialInput', saldoCuentaInicialInput.toFixed(2));
             localStorage.setItem('saldoManoInicialInput', saldoManoInicialInput.toFixed(2));
             localStorage.setItem('saldoBilleteraInicialInput', saldoBilleteraInicialInput.toFixed(2));
@@ -607,7 +625,6 @@
         // --- Funciones de Actualización de UI ---
 
         function actualizarSaldosVisual() {
-            // Total Disponible = Banco + Casa + Billetera (NO Moto MP)
             const saldoTotal = saldoCuentaActual + saldoManoActual + saldoBilleteraActual;
             saldoTotalSpan.textContent = `$${saldoTotal.toFixed(2)}`;
             saldoCuentaSpan.textContent = `$${saldoCuentaActual.toFixed(2)}`;
@@ -616,33 +633,61 @@
             saldoMotoMPSpan.textContent = `$${saldoMotoMPActual.toFixed(2)}`;
         }
 
-        function mostrarHistorialMovimientos() {
-            historialList.innerHTML = ''; // Limpiar historial actual
+        // NUEVO: Función para actualizar totales de ingresos y gastos del mes
+        function actualizarTotalesMes() {
+            let ingresosDelMes = 0;
+            let gastosDelMes = 0;
+            const ahora = new Date();
+            const mesActual = ahora.getMonth(); // 0 (Enero) a 11 (Diciembre)
+            const anioActual = ahora.getFullYear();
 
-            // Combinar todos los movimientos (ingresos, gastos, transferencias)
+            historialIngresos.forEach(ingreso => {
+                const fechaIngreso = new Date(ingreso.fecha + "T00:00:00"); // Asegurar que se interprete como local
+                if (fechaIngreso.getMonth() === mesActual && fechaIngreso.getFullYear() === anioActual) {
+                    ingresosDelMes += ingreso.monto;
+                }
+            });
+
+            historialGastos.forEach(gasto => {
+                const fechaGasto = new Date(gasto.fecha + "T00:00:00"); // Asegurar que se interprete como local
+                if (fechaGasto.getMonth() === mesActual && fechaGasto.getFullYear() === anioActual) {
+                    gastosDelMes += gasto.monto;
+                }
+            });
+
+            totalIngresosMesSpan.textContent = `$${ingresosDelMes.toFixed(2)}`;
+            totalGastosMesSpan.textContent = `$${gastosDelMes.toFixed(2)}`;
+        }
+
+
+        function mostrarHistorialMovimientos() {
+            historialList.innerHTML = '';
+
             const todosLosMovimientos = [
                 ...historialIngresos.map(m => ({ ...m, tipo: 'ingreso' })),
                 ...historialGastos.map(m => ({ ...m, tipo: 'gasto' })),
                 ...historialTransferencias.map(m => ({ ...m, tipo: 'transferencia' }))
-            ].sort((a, b) => new Date(b.fecha) - new Date(a.fecha)); // Ordenar por fecha (más reciente primero)
+            ].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 
             todosLosMovimientos.forEach(movimiento => {
                 const li = document.createElement('li');
                 li.classList.add(movimiento.tipo);
 
-                const fechaFormateada = new Date(movimiento.fecha).toLocaleDateString('es-ES', {
+                // movimiento.fecha está en formato YYYY-MM-DD
+                // Para evitar problemas de zona horaria al convertir a Date, podemos añadir la hora
+                const fechaMovimiento = new Date(movimiento.fecha + "T00:00:00");
+                const fechaFormateada = fechaMovimiento.toLocaleDateString('es-ES', {
                     year: 'numeric',
                     month: '2-digit',
                     day: '2-digit'
                 });
 
-                // Helper para mostrar nombres correctos de las fuentes
                 const getFuenteDisplay = (fuente) => {
                     if (fuente === 'banco') return 'Banco';
                     if (fuente === 'casa') return 'Casa';
                     if (fuente === 'billetera') return 'Billetera';
                     if (fuente === 'motoMP') return 'Moto MP';
-                    return fuente; // En caso de un valor inesperado
+                    return fuente;
                 };
 
                 let itemInfoHTML = '';
@@ -661,7 +706,7 @@
                         <strong>Transferencia</strong> <br>
                         <small>De: ${getFuenteDisplay(movimiento.origen)} a ${getFuenteDisplay(movimiento.destino)} - Fecha: ${fechaFormateada}</small>
                     `;
-                    itemMontoHTML = `$${movimiento.monto.toFixed(2)}`; // Monto de la transferencia, sin signo +/-
+                    itemMontoHTML = `$${movimiento.monto.toFixed(2)}`;
                 }
 
 
@@ -677,24 +722,21 @@
             });
         }
 
-        // NUEVO: Función para mostrar el mes y año actual
         function displayCurrentMonthYear() {
             const now = new Date();
             const options = { year: 'numeric', month: 'long' };
             const monthYearString = now.toLocaleDateString('es-ES', options);
-            currentMonthYearDiv.textContent = monthYearString.charAt(0).toUpperCase() + monthYearString.slice(1); // Capitalizar la primera letra
+            currentMonthYearDiv.textContent = monthYearString.charAt(0).toUpperCase() + monthYearString.slice(1);
         }
 
         // --- Lógica de la Aplicación ---
 
         function setInitialSaldos() {
-            // Actualizar los valores de los inputs iniciales
             saldoCuentaInicialInput = parseFloat(initialCuentaInput.value) || 0;
             saldoManoInicialInput = parseFloat(initialManoInput.value) || 0;
             saldoBilleteraInicialInput = parseFloat(initialBilleteraInput.value) || 0;
             saldoMotoMPInicialInput = parseFloat(initialMotoMPInput.value) || 0;
 
-            // Al establecer los saldos iniciales, los saldos actuales se sincronizan con ellos
             saldoCuentaActual = saldoCuentaInicialInput;
             saldoManoActual = saldoManoInicialInput;
             saldoBilleteraActual = saldoBilleteraInicialInput;
@@ -712,54 +754,60 @@
                 historialTransferencias = [];
                 guardarHistorialLocalStorage();
 
-                // Reiniciar saldos de Banco y Casa a CERO
                 saldoCuentaActual = 0;
                 saldoManoActual = 0;
 
-                // Restablecer los inputs iniciales de Banco y Casa a CERO para reflejar el reinicio
-                initialCuentaInput.value = 0;
-                initialManoInput.value = 0;
+                initialCuentaInput.value = "0.00";
+                initialManoInput.value = "0.00";
                 saldoCuentaInicialInput = 0;
                 saldoManoInicialInput = 0;
 
-                // Billetera y Moto MP NO se reinician
-                // Mantienen su valor actual en saldoBilleteraActual y saldoMotoMPActual
-                // Y sus inputs iniciales también mantienen el último valor establecido por el usuario
+                // Billetera y Moto MP no se reinician aquí, mantienen su saldo actual.
+                // Sus inputs iniciales también reflejan el último valor establecido o el actual si no se han tocado.
+                // Para que los inputs iniciales de billetera y motoMP se mantengan, no los modificamos aquí.
 
-
-                guardarSaldosLocalStorage();
+                guardarSaldosLocalStorage(); // Guarda los saldos actuales (incluyendo Banco y Casa en 0)
+                                            // y los valores de los inputs iniciales (incluyendo Banco y Casa en 0)
                 actualizarSaldosVisual();
                 mostrarHistorialMovimientos();
+                actualizarTotalesMes(); // NUEVO: Actualizar totales del mes
                 alert('Historial reiniciado. Saldos de Banco y Casa puestos a cero. Billetera y Moto MP mantienen su saldo.');
             }
         }
 
         function exportarHistorialCSV() {
             let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Tipo,Descripcion/Origen,Monto,Categoria/Destino,Fuente,Fecha\n"; // Encabezados CSV
+            csvContent += "Tipo,Descripcion/Origen,Monto,Categoria/Destino,Fuente/Origen Transf,Fecha\n";
 
             const todosLosMovimientos = [
-                ...historialIngresos.map(m => ({ ...m, tipo: 'Ingreso', descripcion: m.descripcion, fuente_origen: m.fuente, destino_categoria: m.categoria })),
-                ...historialGastos.map(m => ({ ...m, tipo: 'Gasto', descripcion: m.descripcion, fuente_origen: m.fuente, destino_categoria: m.categoria })),
-                ...historialTransferencias.map(m => ({ ...m, tipo: 'Transferencia', descripcion: `Transferencia de ${getFuenteDisplay(m.origen)} a ${getFuenteDisplay(m.destino)}`, fuente_origen: m.origen, destino_categoria: m.destino }))
-            ].sort((a, b) => new Date(a.fecha) - new Date(b.fecha)); // Ordenar por fecha para el CSV
+                ...historialIngresos.map(m => ({ tipo: 'Ingreso', descripcion: m.descripcion, monto: m.monto, categoria_destino: m.categoria, fuente_origen: m.fuente, fecha: m.fecha })),
+                ...historialGastos.map(m => ({ tipo: 'Gasto', descripcion: m.descripcion, monto: m.monto, categoria_destino: m.categoria, fuente_origen: m.fuente, fecha: m.fecha })),
+                ...historialTransferencias.map(m => ({ tipo: 'Transferencia', descripcion: `De ${getFuenteDisplay(m.origen)} a ${getFuenteDisplay(m.destino)}`, monto: m.monto, categoria_destino: getFuenteDisplay(m.destino), fuente_origen: getFuenteDisplay(m.origen), fecha: m.fecha }))
+            ].sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+            const getFuenteDisplay = (fuente) => { // Helper local para el CSV
+                    if (fuente === 'banco') return 'Banco';
+                    if (fuente === 'casa') return 'Casa';
+                    if (fuente === 'billetera') return 'Billetera';
+                    if (fuente === 'motoMP') return 'Moto MP';
+                    return fuente;
+            };
 
             todosLosMovimientos.forEach(mov => {
-                const getFuenteOrDestinoCSV = (value) => {
-                    if (value === 'banco') return 'Banco';
-                    if (value === 'casa') return 'Casa';
-                    if (value === 'billetera') return 'Billetera';
-                    if (value === 'motoMP') return 'Moto MP';
-                    return value;
-                };
+                 const fechaMovimiento = new Date(mov.fecha + "T00:00:00");
+                 const fechaFormateadaCSV = fechaMovimiento.toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
 
                 const fila = [
                     mov.tipo,
-                    `"${mov.descripcion.replace(/"/g, '""')}"`, // Escapar comillas dobles
+                    `"${mov.descripcion.replace(/"/g, '""')}"`,
                     mov.monto.toFixed(2),
-                    getFuenteOrDestinoCSV(mov.destino_categoria), // Categoría o Destino
-                    getFuenteOrDestinoCSV(mov.fuente_origen), // Fuente u Origen
-                    mov.fecha // La fecha que ya está en el objeto movimiento
+                    `"${mov.categoria_destino.replace(/"/g, '""')}"`,
+                    `"${mov.fuente_origen.replace(/"/g, '""')}"`,
+                    fechaFormateadaCSV
                 ].join(",");
                 csvContent += fila + "\n";
             });
@@ -779,7 +827,9 @@
             cargarSaldosLocalStorage();
             cargarHistorialLocalStorage();
             actualizarSaldosVisual();
-            displayCurrentMonthYear(); // NUEVO: Mostrar el mes y año al cargar
+            mostrarHistorialMovimientos(); // CORREGIDO: Llamar para mostrar historial al cargar
+            actualizarTotalesMes();       // NUEVO: Calcular y mostrar totales del mes al cargar
+            displayCurrentMonthYear();
         });
 
         setInitialSaldosBtn.addEventListener('click', setInitialSaldos);
@@ -791,7 +841,7 @@
             const montoIngreso = parseFloat(document.getElementById('monto-ingreso').value);
             const categoriaIngreso = document.getElementById('categoria-ingreso').value;
             const fuenteIngreso = document.querySelector('input[name="fuente-ingreso"]:checked').value;
-            const fechaIngreso = new Date().toISOString().split('T')[0]; // Obtener la fecha actual automáticamente
+            const fechaIngreso = new Date().toISOString().split('T')[0];
 
             if (montoIngreso <= 0) {
                 alert('El monto del ingreso debe ser mayor a cero.');
@@ -814,6 +864,7 @@
             const nuevoIngreso = { descripcion: descripcionIngreso, monto: montoIngreso, categoria: categoriaIngreso, fuente: fuenteIngreso, fecha: fechaIngreso };
             historialIngresos.push(nuevoIngreso);
             mostrarHistorialMovimientos();
+            actualizarTotalesMes(); // NUEVO
             guardarHistorialLocalStorage();
 
             formularioIngreso.reset();
@@ -827,7 +878,7 @@
             const montoGasto = parseFloat(document.getElementById('monto-gasto').value);
             const categoriaGasto = document.getElementById('categoria-gasto').value;
             const fuenteGasto = document.querySelector('input[name="fuente-gasto"]:checked').value;
-            const fechaGasto = new Date().toISOString().split('T')[0]; // Obtener la fecha actual automáticamente
+            const fechaGasto = new Date().toISOString().split('T')[0];
 
             if (montoGasto <= 0) {
                 alert('El monto del gasto debe ser mayor a cero.');
@@ -867,6 +918,7 @@
             const nuevoGasto = { descripcion: descripcionGasto, monto: montoGasto, categoria: categoriaGasto, fuente: fuenteGasto, fecha: fechaGasto };
             historialGastos.push(nuevoGasto);
             mostrarHistorialMovimientos();
+            actualizarTotalesMes(); // NUEVO
             guardarHistorialLocalStorage();
 
             formularioGasto.reset();
@@ -879,7 +931,7 @@
             const montoTransferencia = parseFloat(document.getElementById('monto-transferencia').value);
             const origenTransferencia = document.getElementById('origen-transferencia').value;
             const destinoTransferencia = document.getElementById('destino-transferencia').value;
-            const fechaTransferencia = new Date().toISOString().split('T')[0]; // Obtener la fecha actual automáticamente
+            const fechaTransferencia = new Date().toISOString().split('T')[0];
 
             if (montoTransferencia <= 0) {
                 alert('El monto de la transferencia debe ser mayor a cero.');
@@ -936,6 +988,7 @@
             };
             historialTransferencias.push(nuevaTransferencia);
             mostrarHistorialMovimientos();
+            // Las transferencias no afectan los totales de ingresos/gastos del mes, solo mueven dinero entre cuentas.
             guardarHistorialLocalStorage();
 
             formularioTransferencia.reset();
